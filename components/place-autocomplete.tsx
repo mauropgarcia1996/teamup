@@ -115,8 +115,8 @@ export function PlaceAutocomplete({ value, onChange }: PlaceAutocompleteProps) {
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent 
-        className="p-0 fixed left-4 right-4 md:relative md:left-0 md:right-0 md:w-full" 
+      <PopoverContent
+        className="p-0 fixed left-4 right-4 md:relative md:left-0 md:right-0 md:w-full"
         sideOffset={8}
         align="start"
       >
@@ -141,7 +141,7 @@ export function PlaceAutocomplete({ value, onChange }: PlaceAutocompleteProps) {
                   }
                   disabled={isLoadingDetails}
                   className={cn(
-                    isLoadingDetails && "opacity-50 cursor-not-allowed"
+                    isLoadingDetails && "opacity-50 cursor-not-allowed",
                   )}
                 >
                   {prediction.description}
