@@ -17,12 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { PhoneFormValues, ProfileFormValues } from "@/lib/schemas";
 import type { Country } from "@/types/shared";
 
-const countries: Country[] = [
-  { flag: "🇦🇷", code: "+54" },
-  { flag: "🇧🇷", code: "+55" },
-  { flag: "🇨🇱", code: "+56" },
-  { flag: "🇺🇾", code: "+598" },
-];
+const countries: Country[] = [{ flag: "🇦🇷", code: "+54" }];
 
 export default function LoginPage() {
   const [showOTP, setShowOTP] = useState(false);
