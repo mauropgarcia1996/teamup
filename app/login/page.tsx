@@ -16,33 +16,32 @@ import { OtpForm } from "@/components/auth/otp-form";
 import { useToast } from "@/hooks/use-toast";
 import type { PhoneFormValues, ProfileFormValues } from "@/lib/schemas";
 import type { Country } from "@/types/shared";
+import { EmailForm } from "@/components/auth/email-form";
 
 const countries: Country[] = [{ flag: "🇦🇷", code: "+54" }];
 
 export default function LoginPage() {
   const [showOTP, setShowOTP] = useState(false);
   const [isNewUser, setIsNewUser] = useState(false);
-  const [phoneData, setPhoneData] = useState<PhoneFormValues | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const supabase = createClient();
   const router = useRouter();
   const toast = useToast();
 
-  async function onSubmitPhone(data: PhoneFormValues) {
+  async function onSubmitEmail(data: { email: string }) {
     try {
-      const fullPhoneNumber = `${data.countryCode}${data.phoneNumber}`;
-
       // Check if user exists
       const { data: users } = await supabase
         .from("users")
         .select("*")
-        .eq("phone_number", fullPhoneNumber.replace(/\+/g, ""))
+        .eq("email", data.email)
         .maybeSingle();
 
       if (!users || users.first_name === "first_name") {
         setIsNewUser(!users);
       }
 
-      setPhoneData(data);
+      setEmail(data.email);
 
       if (!users) {
         // New user, show profile form
@@ -50,16 +49,16 @@ export default function LoginPage() {
       } else {
         // Existing user, send OTP directly
         const { error } = await supabase.auth.signInWithOtp({
-          phone: fullPhoneNumber,
+          email: data.email,
         });
         if (error) throw error;
         setShowOTP(true);
-        toast.success("Verification code sent", "Please check your phone");
+        toast.success("Verification code sent", "Please check your email");
       }
     } catch (error) {
       console.error("Error:", error);
       toast.error(
-        "Failed to process phone number",
+        "Failed to process email",
         error instanceof Error ? error.message : undefined,
       );
     }
@@ -67,11 +66,10 @@ export default function LoginPage() {
 
   async function onSubmitProfile(data: ProfileFormValues) {
     try {
-      if (!phoneData) throw new Error("Phone data is missing");
+      if (!email) throw new Error("Email is missing");
 
-      const fullPhoneNumber = `${phoneData.countryCode}${phoneData.phoneNumber}`;
       const { error } = await supabase.auth.signInWithOtp({
-        phone: fullPhoneNumber,
+        email: email,
         options: {
           data: {
             first_name: data.firstName,
@@ -81,7 +79,7 @@ export default function LoginPage() {
       });
       if (error) throw error;
       setShowOTP(true);
-      toast.success("Profile created", "Please check your phone");
+      toast.success("Profile created", "Please check your email");
     } catch (error) {
       console.error("Error sending OTP:", error);
       toast.error(
@@ -93,16 +91,15 @@ export default function LoginPage() {
 
   async function onVerifyOtp(otpValue: string) {
     try {
-      if (!phoneData) throw new Error("Phone data is missing");
+      if (!email) throw new Error("Email is missing");
 
-      const fullPhoneNumber = `${phoneData.countryCode}${phoneData.phoneNumber}`;
       const {
         data: { session },
         error,
       } = await supabase.auth.verifyOtp({
-        phone: fullPhoneNumber,
+        email: email,
         token: otpValue,
-        type: "sms",
+        type: "email",
       });
 
       if (error) throw error;
@@ -127,8 +124,8 @@ export default function LoginPage() {
           </CardTitle>
           <CardDescription className="text-center">
             {!showOTP
-              ? "Enter your phone number to get started"
-              : "Enter the verification code sent to your phone"}
+              ? "Enter your email to get started"
+              : "Enter the verification code sent to your email"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -139,12 +136,11 @@ export default function LoginPage() {
                 initialValues={{
                   firstName: "",
                   lastName: "",
-                  countryCode: phoneData?.countryCode ?? "+54",
-                  phoneNumber: phoneData?.phoneNumber ?? "",
+                  email: email ?? "",
                 }}
               />
             ) : (
-              <PhoneForm onSubmit={onSubmitPhone} countries={countries} />
+              <EmailForm onSubmit={onSubmitEmail} />
             )
           ) : (
             <OtpForm onVerify={onVerifyOtp} />

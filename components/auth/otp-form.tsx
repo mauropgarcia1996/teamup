@@ -1,40 +1,80 @@
-import { useState } from "react";
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+
+const otpFormSchema = z.object({
+  otp: z.string().min(6, {
+    message: "Please enter the complete verification code.",
+  }),
+});
 
 interface OtpFormProps {
-  onVerify: (otp: string) => Promise<void>;
+  onVerify: (otp: string) => void;
 }
 
 export function OtpForm({ onVerify }: OtpFormProps) {
-  const [otp, setOtp] = useState("");
+  const form = useForm<z.infer<typeof otpFormSchema>>({
+    resolver: zodResolver(otpFormSchema),
+    defaultValues: {
+      otp: "",
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await onVerify(otp);
-  };
+  function onSubmit(data: z.infer<typeof otpFormSchema>) {
+    onVerify(data.otp);
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-2 text-center">
-        <h3 className="font-medium">Enter Verification Code</h3>
-        <p className="text-sm text-muted-foreground">
-          We sent a code to your phone number
-        </p>
-      </div>
-      <div className="space-y-2">
-        <Input
-          placeholder="Enter code"
-          value={otp}
-          onChange={(e) => setOtp(e.target.value)}
-          type="text"
-          maxLength={6}
-          className="text-center text-lg tracking-widest"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="otp"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Verification Code</FormLabel>
+              <FormControl>
+                <InputOTP
+                  maxLength={6}
+                  value={field.value}
+                  onChange={field.onChange}
+                  className="gap-2"
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      <Button type="submit" className="w-full" disabled={otp.length !== 6}>
-        Verify
-      </Button>
-    </form>
+        <Button type="submit" className="w-full">
+          Verify
+        </Button>
+      </form>
+    </Form>
   );
 }

@@ -13,7 +13,7 @@ export const ProfileFormSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   countryCode: z.string().min(1, "Please select a country code"),
-  phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format"),
+  email: z.string().email("Please enter a valid email address"),
 });
 
 export const GameFormSchema = z.object({
@@ -23,6 +23,18 @@ export const GameFormSchema = z.object({
   description: z.string().optional(),
 });
 
+export const emailFormSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+});
+
+export const profileFormSchema = z.object({
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+});
+
 export type PhoneFormValues = z.infer<typeof PhoneFormSchema>;
 export type ProfileFormValues = z.infer<typeof ProfileFormSchema>;
 export type GameFormValues = z.infer<typeof GameFormSchema>;
+export type EmailFormValues = z.infer<typeof emailFormSchema>;
+export type ProfileFormValues = z.infer<typeof profileFormSchema>;
