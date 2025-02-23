@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
+import { EmailForm } from "@/components/auth/email-form";
+import { OtpForm } from "@/components/auth/otp-form";
+import { ProfileForm } from "@/components/auth/profile-form";
 import {
   Card,
   CardContent,
@@ -10,15 +10,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PhoneForm } from "@/components/auth/phone-form";
-import { ProfileForm } from "@/components/auth/profile-form";
-import { OtpForm } from "@/components/auth/otp-form";
 import { useToast } from "@/hooks/use-toast";
-import type { PhoneFormValues, ProfileFormValues } from "@/lib/schemas";
-import type { Country } from "@/types/shared";
-import { EmailForm } from "@/components/auth/email-form";
-
-const countries: Country[] = [{ flag: "🇦🇷", code: "+54" }];
+import type { ProfileFormValues } from "@/lib/schemas";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginPage() {
   const [showOTP, setShowOTP] = useState(false);

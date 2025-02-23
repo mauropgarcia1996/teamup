@@ -2,7 +2,7 @@ import { toast } from "sonner";
 import type { ToastMessage } from "@/types/shared";
 
 export function useToast() {
-  const showToast = ({ title, description, type }: ToastMessage) => {
+  const showToast = ({ title, description, type }: ToastMessage): void => {
     switch (type) {
       case "success":
         toast.success(title, {
@@ -28,13 +28,13 @@ export function useToast() {
 
   return {
     showToast,
-    success: (title: string, description?: string) =>
+    success: (title: string, description?: string): void =>
       showToast({ title, description, type: "success" }),
-    error: (title: string, description?: string) =>
+    error: (title: string, description?: string): void =>
       showToast({ title, description, type: "error" }),
-    warning: (title: string, description?: string) =>
+    warning: (title: string, description?: string): void =>
       showToast({ title, description, type: "warning" }),
-    info: (title: string, description?: string) =>
+    info: (title: string, description?: string): void =>
       showToast({ title, description, type: "info" }),
   };
 }

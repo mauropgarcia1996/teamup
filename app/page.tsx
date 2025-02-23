@@ -1,8 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { PlusCircle, MapPin, Users, Calendar, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -10,8 +7,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { createClient } from "@/utils/supabase/client";
 import type { Database } from "@/database.types";
+import { createClient } from "@/utils/supabase/client";
+import { Calendar, ChevronDown, MapPin, PlusCircle, Users } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type Game = Database["public"]["Tables"]["games"]["Row"];
 
@@ -38,6 +38,7 @@ export default function Page() {
     }
 
     fetchGames();
+     
   }, []);
   const now = new Date();
   const upcomingGames = games.filter((game) => new Date(game.date) > now);
