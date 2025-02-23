@@ -1,4 +1,7 @@
-import { Client } from "@googlemaps/google-maps-services-js";
+import {
+  Client,
+  PlaceAutocompleteType,
+} from "@googlemaps/google-maps-services-js";
 import { NextResponse } from "next/server";
 
 const client = new Client({});
@@ -17,7 +20,7 @@ export async function GET(request: Request) {
         input,
         key: process.env.GOOGLE_PLACES_API_KEY!,
         components: ["country:ar"],
-        types: ["establishment", "geocode"],
+        types: PlaceAutocompleteType.establishment,
       },
     });
 
