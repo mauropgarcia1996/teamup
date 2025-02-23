@@ -1,9 +1,9 @@
 import { Calendar, MapPin, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { GameWithPlayers } from "@/hooks/use-game";
 
 interface GameCardProps {
-  game: GameWithPlayers;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  game: any;
   onClick?: () => void;
 }
 
